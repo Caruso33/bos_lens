@@ -60,7 +60,7 @@ function renderProfile() {
   )
 }
 
-console.log("props", props)
-console.log("state", state)
+console.log("props view", props)
+console.log("state view", state)
 
 return <div>{renderProfile()}</div>
