@@ -2,7 +2,7 @@ const LENS_API_URL = props.testnet
   ? "https://api-mumbai.lens.dev"
   : "https://api.lens.dev";
 
-const WIDGET_URL = props.testnet ? "gr8h.testnet" : "gr8h.near";
+const DEV_USER = props.testnet ? "gr8h.testnet" : "gr8h.near";
 
 State.init({
   authenticated: null,
@@ -84,13 +84,13 @@ function init(sdk) {
   }
 }
 
-console.log("props controller", props);
-console.log("state controller", state);
+// console.log("props controller", props);
+// console.log("state controller", state);
 
 return (
   <>
     <Widget
-      src={`${WIDGET_URL}/widget/LensSDK`}
+      src={`${DEV_USER}/widget/LensSDK`}
       props={{
         onLoad: (sdk) => init(sdk),
         onRefresh: (sdk) => State.update({ sdk: sdk }),
@@ -102,7 +102,7 @@ return (
     {state.sdk ? (
       state.isProfileCalled && !state.profile ? (
         <Widget
-          src={`${WIDGET_URL}/widget/LensProfileCreate`}
+          src={`${DEV_USER}/widget/LensProfileCreate`}
           props={{
             ...state,
             lensUrl: LENS_API_URL,
@@ -110,7 +110,7 @@ return (
         />
       ) : (
         <Widget
-          src={`${WIDGET_URL}/widget/LensProfileView`}
+          src={`${DEV_USER}/widget/LensProfileView`}
           props={{
             ...state,
             lensUrl: LENS_API_URL,
