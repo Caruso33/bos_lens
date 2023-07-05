@@ -1,4 +1,4 @@
-State.init({})
+State.init({});
 
 const Box = styled.div`
   position: relative;
@@ -10,57 +10,38 @@ const Box = styled.div`
   margin: 0 auto;
   color: #fff;
   text-align: center;
-`
+`;
 
 function renderProfile() {
   return !props.profile ? (
-    <div>Please provide a handle or lens id</div>
+    <div>Profile is missing!</div>
   ) : (
     <>
-      <h1>{props.profile.name}</h1>
-      <p>@{props.profile.handle}</p>
-      <p>{props.profile.bio}</p>
-      {/* <Box>
-        {getConnectionOverlay()}
-        <BoxCover style={coverStyles}>
-          <BoxProfilePicture>
-            <ProfilePicture style={profilePicStyles} />
-          </BoxProfilePicture>
-        </BoxCover>
-        <BoxContent>
-          <h1>{state.profile.name}</h1>
-          <p>@{state.profile.handle}</p>
-          <p>{state.profile.bio}</p>
-          <br />
-          <BoxStats>
-            <h4>
-              Followers
-              <br />
-              {state.profile.stats.totalFollowers}
-            </h4>
-            <h4>
-              Comments
-              <br />
-              {state.profile.stats.totalComments}
-            </h4>
-            <h4>
-              Posts
-              <br />
-              {state.profile.stats.totalPosts}
-            </h4>
-          </BoxStats>
-          {!!state.account &&
-          !!state.profile &&
-          state.account.toLowerCase() != state.profile.ownedBy.toLowerCase()
-            ? getFollowButton()
-            : ""}
-        </BoxContent>
-      </Box> */}
+      <div class="container border border-info p-3">
+        <img src={props.profile.picture.original.url} width={100} />
+        <h1>{props.profile.name}</h1>
+        <p>@{props.profile.handle}</p>
+        <p>{props.profile.bio}</p>
+        <div>
+          <p>
+            Followers
+            {props.profile.stats.totalFollowers}
+          </p>
+          <p>
+            Comments
+            {props.profile.stats.totalComments}
+          </p>
+          <p>
+            Posts
+            {props.profile.stats.totalPosts}
+          </p>
+        </div>
+      </div>
     </>
-  )
+  );
 }
 
-console.log("props view", props)
-console.log("state view", state)
+console.log("props view", props);
+console.log("state view", state);
 
-return <div>{renderProfile()}</div>
+return <div>{renderProfile()}</div>;
