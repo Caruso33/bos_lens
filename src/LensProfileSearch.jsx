@@ -8,6 +8,7 @@ State.init({
   selectedProfile: { profile: null, selection: "" },
   followers: props.followers ?? [],
   posts: props.posts ?? [],
+  comments: props.comments ?? [],
 })
 
 const computeResults = (term) => {
@@ -25,6 +26,12 @@ const getFollowers = (profileId) => {
 const getPosts = (profileId) => {
   state.sdk.getPosts(profileId).then((payload) => {
     State.update({ posts: payload.body.data.publications.items })
+  })
+}
+
+const getComments = (profileId) => {
+  state.sdk.getComments(profileId).then((payload) => {
+    State.update({ comments: payload.body.data.publications.items })
   })
 }
 
@@ -76,6 +83,7 @@ return (
                   })
                   if (selection === "followers") getFollowers(result.profileId)
                   if (selection === "posts") getPosts(result.profileId)
+                  if (selection === "comments") getPosts(result.profileId)
                 },
               }}
             />
@@ -86,12 +94,17 @@ return (
       <RightPanelWrapper>
         {state.selectedProfile?.selection === "followers" ? (
           <Widget
-            src={`${DEV_USER}/widget/LensProfileFollowerView`}
+            src={`${DEV_USER}/widget/LensProfileFollowersView`}
             props={{ followers: state.followers }}
           />
         ) : state.selectedProfile?.selection === "posts" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfilePostsView`}
+            props={{ posts: state.posts }}
+          />
+        ) : state.selectedProfile?.selection === "comments" ? (
+          <Widget
+            src={`${DEV_USER}/widget/LensProfileCommentsView`}
             props={{ posts: state.posts }}
           />
         ) : (
