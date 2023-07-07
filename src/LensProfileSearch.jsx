@@ -35,7 +35,7 @@ return (
     {state.profiles.map((result) => {
       return (
         <Widget
-          src={`${DEV_USER}/widget/LensProfileView`}
+          src={`${DEV_USER}/widget/LensProfileSearchView`}
           props={{
             profile: result,
           }}
