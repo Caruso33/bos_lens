@@ -1,8 +1,8 @@
-const { onLoad, onRefresh, loaded, testnet } = props;
+const { onLoad, onRefresh, loaded, testnet } = props
 
 const LENS_API_URL = testnet
   ? "https://api-mumbai.lens.dev"
-  : "https://api.lens.dev";
+  : "https://api.lens.dev"
 
 let LensSDK = {
   jwt: {
@@ -20,7 +20,7 @@ let LensSDK = {
         query: query,
         variables: variables ?? {},
       }),
-    });
+    })
   },
   getChallenge: (address) => {
     return LensSDK.request(
@@ -34,7 +34,7 @@ let LensSDK = {
       {
         address: address,
       }
-    );
+    )
   },
   authenticateSignature: (address, signature) => {
     return LensSDK.request(
@@ -53,12 +53,12 @@ let LensSDK = {
         address: address,
         signature: signature,
       }
-    );
+    )
   },
   authenticateLens: (address, signer, onSuccess) => {
     LensSDK.getChallenge(address).then((payload) => {
-      let challenge = payload.body.data.challenge.text;
-      const response = signer().signMessage(challenge);
+      let challenge = payload.body.data.challenge.text
+      const response = signer().signMessage(challenge)
 
       response.then((signature) => {
         LensSDK.authenticateSignature(address, signature).then((payload) => {
@@ -66,43 +66,159 @@ let LensSDK = {
             payload.status === 200 &&
             !!payload.body.data.authenticate.accessToken
           ) {
-            LensSDK.jwt.accessToken =
-              payload.body.data.authenticate.accessToken;
+            LensSDK.jwt.accessToken = payload.body.data.authenticate.accessToken
             LensSDK.jwt.refreshToken =
-              payload.body.data.authenticate.refreshToken;
-            LensSDK.authenticated = true;
+              payload.body.data.authenticate.refreshToken
+            LensSDK.authenticated = true
 
             if (onSuccess) {
-              onSuccess();
+              onSuccess()
             }
 
             if (onRefresh) {
-              onRefresh(LensSDK);
+              onRefresh(LensSDK)
             }
           }
-        });
-      });
-    });
+        })
+      })
+    })
+  },
+
+  // ``
+  // query Search {
+  //   search(request: {
+  //     query: "` +
+  //   query +
+  //   `",
+  //     type: PROFILE,
+  //     limit: 10
+  //   }) {`
+
+  getFollowers: (profileId) => {
+    return LensSDK.request(
+      `
+      query Followers {
+        followers(request: { 
+                      profileId: "` +
+        profileId +
+        `",
+                    limit: 10
+                   }) {
+             items {
+            wallet {
+              address
+              defaultProfile {
+                id
+                name
+                bio
+                attributes {
+                  displayType
+                  traitType
+                  key
+                  value
+                }
+                followNftAddress
+                  metadata
+                isDefault
+                handle
+                picture {
+                  ... on NftImage {
+                    contractAddress
+                    tokenId
+                    uri
+                    verified
+                  }
+                  ... on MediaSet {
+                    original {
+                      url
+                      mimeType
+                    }
+                  }
+                }
+                coverPicture {
+                  ... on NftImage {
+                    contractAddress
+                    tokenId
+                    uri
+                    verified
+                  }
+                  ... on MediaSet {
+                    original {
+                      url
+                      mimeType
+                    }
+                  }
+                }
+                ownedBy
+                dispatcher {
+                  address
+                  canUseRelay
+                }
+                stats {
+                  totalFollowers
+                  totalFollowing
+                  totalPosts
+                  totalComments
+                  totalMirrors
+                  totalPublications
+                  totalCollects
+                }
+                followModule {
+                  ... on FeeFollowModuleSettings {
+                    type
+                    contractAddress
+                    amount {
+                      asset {
+                        name
+                        symbol
+                        decimals
+                        address
+                      }
+                      value
+                    }
+                    recipient
+                  }
+                  ... on ProfileFollowModuleSettings {
+                   type
+                  }
+                  ... on RevertFollowModuleSettings {
+                   type
+                  }
+                }
+              }
+            }
+            totalAmountOfTimesFollowed
+          }
+          pageInfo {
+            prev
+            next
+            totalCount
+          }
+        }
+      }
+      
+      `,
+      {
+        "Content-Type": "application/json",
+        "x-access-token": LensSDK.jwt.accessToken,
+      }
+    )
   },
   isFollowedByMe: (profileId) => {
     return LensSDK.request(
       `
-                query Profile {
-                    profile(request: { profileId: "` +
+      query Profile {
+        profile(request: { profileId: "` +
         profileId +
-        `" }) {
-                        isFollowedByMe
-                    }
-                }`,
+        `" }) {isFollowedByMe}}`,
       {},
       {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    );
+    )
   },
   getProfileByHandle: (handle) => {
-
     return LensSDK.request(
       `
         query Profile ($handle: Handle!) {
@@ -166,14 +282,16 @@ let LensSDK = {
       {
         handle: handle,
       }
-    );
+    )
   },
   searchProfiles: (query) => {
     return LensSDK.request(
       `
       query Search {
         search(request: {
-          query: "` + query + `",
+          query: "` +
+        query +
+        `",
           type: PROFILE,
           limit: 10
         }) {
@@ -282,9 +400,8 @@ let LensSDK = {
           }
         }
       }
-  `,
-      
-    );
+  `
+    )
   },
   getProfileByEthereumAddress: (ethereumAddress) => {
     return LensSDK.request(
@@ -300,7 +417,7 @@ let LensSDK = {
       {
         address: [ethereumAddress],
       }
-    );
+    )
   },
   followProfile: (profileId) => {
     return LensSDK.request(
@@ -321,7 +438,7 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    );
+    )
   },
   unfollowProfile: (profileId) => {
     return LensSDK.request(
@@ -364,10 +481,10 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    );
+    )
   },
-};
+}
 
 if (!!onLoad && !loaded) {
-  onLoad(LensSDK);
+  onLoad(LensSDK)
 }

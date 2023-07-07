@@ -1,35 +1,44 @@
-State.init({});
+State.init({})
+
+const SelectionButton = styled.button`
+  border-radius: 15px;
+  background: white;
+  padding: 5px;
+`
 
 function renderProfile() {
+  console.log("onSelection", props.onSelection)
+
   return !props.profile ? (
     <div>Profile is missing!</div>
   ) : (
     <>
-      <div class="container border border-info p-3">
+      <div class="container border p-3 m-3">
         <img src={props.profile.picture.original.url} width={100} />
         <h1>{props.profile.name}</h1>
         <p>@{props.profile.handle}</p>
         <p>{props.profile.bio}</p>
         <div>
-          <p>
+          <SelectionButton onClick={() => props.onSelection("followers")}>
             Followers
             {props.profile.stats.totalFollowers}
-          </p>
-          <p>
+          </SelectionButton>
+
+          <SelectionButton onClick={() => props.onSelection("comments")}>
             Comments
             {props.profile.stats.totalComments}
-          </p>
-          <p>
+          </SelectionButton>
+
+          <SelectionButton onClick={() => props.onSelection("posts")}>
             Posts
             {props.profile.stats.totalPosts}
-          </p>
+          </SelectionButton>
         </div>
       </div>
     </>
-  );
+  )
 }
 
-console.log("props view", props);
-console.log("state view", state);
+console.log("LensProfileSearchView, props: ", props, " state: ", state)
 
-return <div>{renderProfile()}</div>;
+return <div>{renderProfile()}</div>
