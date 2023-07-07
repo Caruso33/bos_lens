@@ -20,7 +20,7 @@ const ImgPlaceholder = styled.div`
   height: 80px;
 `
 
-function renderProfiles() {
+function renderFollowers() {
   return !props.followers ? (
     <div>Followers are missing!</div>
   ) : (
@@ -46,4 +46,4 @@ function renderProfiles() {
 
 console.log("LensProfileFollowerView, props: ", props, " state: ", state)
 
-return <div>{renderProfiles()}</div>
+return <div>{renderFollowers()}</div>

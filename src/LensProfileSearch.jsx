@@ -7,6 +7,7 @@ State.init({
   sdk: null,
   selectedProfile: { profile: null, selection: "" },
   followers: props.followers ?? [],
+  posts: props.posts ?? [],
 })
 
 const computeResults = (term) => {
@@ -18,6 +19,12 @@ const computeResults = (term) => {
 const getFollowers = (profileId) => {
   state.sdk.getFollowers(profileId).then((payload) => {
     State.update({ followers: payload.body.data.followers.items })
+  })
+}
+
+const getPosts = (profileId) => {
+  state.sdk.getPosts(profileId).then((payload) => {
+    State.update({ posts: payload.body.data.publications.items })
   })
 }
 
@@ -67,7 +74,8 @@ return (
                   State.update({
                     selectedProfile: { profile: result, selection },
                   })
-                  getFollowers(result.profileId)
+                  if (selection === "followers") getFollowers(result.profileId)
+                  if (selection === "posts") getPosts(result.profileId)
                 },
               }}
             />
@@ -80,6 +88,11 @@ return (
           <Widget
             src={`${DEV_USER}/widget/LensProfileFollowerView`}
             props={{ followers: state.followers }}
+          />
+        ) : state.selectedProfile?.selection === "posts" ? (
+          <Widget
+            src={`${DEV_USER}/widget/LensProfilePostsView`}
+            props={{ posts: state.posts }}
           />
         ) : (
           <div>
