@@ -1,8 +1,8 @@
-const { onLoad, onRefresh, loaded, testnet } = props
+const { onLoad, onRefresh, loaded, testnet } = props;
 
 const LENS_API_URL = testnet
   ? "https://api-mumbai.lens.dev"
-  : "https://api.lens.dev"
+  : "https://api.lens.dev";
 
 let LensSDK = {
   jwt: {
@@ -20,7 +20,7 @@ let LensSDK = {
         query: query,
         variables: variables ?? {},
       }),
-    })
+    });
   },
   getChallenge: (address) => {
     return LensSDK.request(
@@ -34,7 +34,7 @@ let LensSDK = {
       {
         address: address,
       }
-    )
+    );
   },
   authenticateSignature: (address, signature) => {
     return LensSDK.request(
@@ -53,12 +53,12 @@ let LensSDK = {
         address: address,
         signature: signature,
       }
-    )
+    );
   },
   authenticateLens: (address, signer, onSuccess) => {
     LensSDK.getChallenge(address).then((payload) => {
-      let challenge = payload.body.data.challenge.text
-      const response = signer().signMessage(challenge)
+      let challenge = payload.body.data.challenge.text;
+      const response = signer().signMessage(challenge);
 
       response.then((signature) => {
         LensSDK.authenticateSignature(address, signature).then((payload) => {
@@ -66,22 +66,23 @@ let LensSDK = {
             payload.status === 200 &&
             !!payload.body.data.authenticate.accessToken
           ) {
-            LensSDK.jwt.accessToken = payload.body.data.authenticate.accessToken
+            LensSDK.jwt.accessToken =
+              payload.body.data.authenticate.accessToken;
             LensSDK.jwt.refreshToken =
-              payload.body.data.authenticate.refreshToken
-            LensSDK.authenticated = true
+              payload.body.data.authenticate.refreshToken;
+            LensSDK.authenticated = true;
 
             if (onSuccess) {
-              onSuccess()
+              onSuccess();
             }
 
             if (onRefresh) {
-              onRefresh(LensSDK)
+              onRefresh(LensSDK);
             }
           }
-        })
-      })
-    })
+        });
+      });
+    });
   },
   getFollowers: (profileId) => {
     return LensSDK.request(
@@ -91,7 +92,7 @@ let LensSDK = {
                       profileId: "` +
         profileId +
         `",
-                    limit: 10
+                    limit: 20
                    }) {
              items {
             wallet {
@@ -191,7 +192,7 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    )
+    );
   },
   isFollowedByMe: (profileId) => {
     return LensSDK.request(
@@ -205,7 +206,7 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    )
+    );
   },
   getProfileByHandle: (handle) => {
     return LensSDK.request(
@@ -271,7 +272,7 @@ let LensSDK = {
       {
         handle: handle,
       }
-    )
+    );
   },
   searchProfiles: (query) => {
     return LensSDK.request(
@@ -390,7 +391,7 @@ let LensSDK = {
         }
       }
   `
-    )
+    );
   },
   getProfileByEthereumAddress: (ethereumAddress) => {
     return LensSDK.request(
@@ -406,7 +407,7 @@ let LensSDK = {
       {
         address: [ethereumAddress],
       }
-    )
+    );
   },
   followProfile: (profileId) => {
     return LensSDK.request(
@@ -427,7 +428,7 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    )
+    );
   },
   unfollowProfile: (profileId) => {
     return LensSDK.request(
@@ -470,7 +471,7 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    )
+    );
   },
   getPosts: (profileId) => {
     return LensSDK.request(
@@ -834,7 +835,7 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    )
+    );
   },
   getComments: (profileId) => {
     return LensSDK.request(
@@ -1198,10 +1199,10 @@ let LensSDK = {
         "Content-Type": "application/json",
         "x-access-token": LensSDK.jwt.accessToken,
       }
-    )
+    );
   },
-}
+};
 
 if (!!onLoad && !loaded) {
-  onLoad(LensSDK)
+  onLoad(LensSDK);
 }

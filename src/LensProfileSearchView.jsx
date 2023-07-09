@@ -1,13 +1,13 @@
-State.init({})
+State.init({});
 
 const SelectionButton = styled.button`
   border-radius: 15px;
   background: white;
   padding: 5px;
-`
+`;
 
 function renderProfile() {
-  console.log("onSelection", props.onSelection)
+  console.log("onSelection", props.onSelection);
 
   return !props.profile ? (
     <div>Profile is missing!</div>
@@ -19,6 +19,10 @@ function renderProfile() {
         <p>@{props.profile.handle}</p>
         <p>{props.profile.bio}</p>
         <div>
+          <SelectionButton onClick={() => props.onSelection("follow")}>
+            {props.profile.isFollowedByMe ? "Unfollow" : "Follow"}
+          </SelectionButton>
+          <br />
           <SelectionButton onClick={() => props.onSelection("followers")}>
             Followers
             {props.profile.stats.totalFollowers}
@@ -36,9 +40,9 @@ function renderProfile() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-console.log("LensProfileSearchView, props: ", props, " state: ", state)
+console.log("LensProfileSearchView, props: ", props, " state: ", state);
 
-return <div>{renderProfile()}</div>
+return <div>{renderProfile()}</div>;
