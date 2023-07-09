@@ -13,6 +13,8 @@ const ProfileBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
   padding: 1rem;
   border: 1px solid gray;
 `;
@@ -29,28 +31,47 @@ const SelectionButton = styled.button`
   padding: 5px;
 `;
 
+const ProfileHandle = styled.p`
+  word-break: break-all;
+`;
+
 function renderFollowers() {
-  return !props.followers ? (
-    <div>Followers are missing!</div>
-  ) : (
-    <>
-      <Box>
-        {props.followers.map((follower) => {
+  return (
+    <Box>
+      {!props.followers || props.followers.length === 0 ? (
+        <div>No Followers so far.</div>
+      ) : (
+        props.followers.map((follower) => {
           const profile = follower?.wallet?.defaultProfile;
 
           return (
-            <ProfileBox class="p-4">
+            <ProfileBox class="p-3">
               {profile?.picture?.original?.url ? (
                 <img src={profile.picture.original.url} width={80} />
               ) : (
                 <ImgPlaceholder />
               )}
-              <p>@{profile?.handle}</p>
+              <ProfileHandle>@{profile?.handle}</ProfileHandle>
+
+              <div>
+                <div>
+                  Followers
+                  {profile.stats.totalFollowers}
+                </div>
+                <div>
+                  Comments
+                  {profile.stats.totalComments}
+                </div>
+                <div>
+                  Posts
+                  {profile.stats.totalPosts}
+                </div>
+              </div>
             </ProfileBox>
           );
-        })}
-      </Box>
-    </>
+        })
+      )}
+    </Box>
   );
 }
 

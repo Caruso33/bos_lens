@@ -1,15 +1,17 @@
 const DEV_USER = props.testnet ? "caruso33.testnet" : "gr8h.testnet";
 // https://near.org/{DEV_USER}/widget/LensProfileSearch
 
-State.init({
-  term: props.terms ?? "melike.test",
+const initState = {
+  term: props.terms ?? "",
   profiles: props.profile ?? [],
   sdk: null,
   selectedProfile: { profile: null, selection: "" },
   followers: props.followers ?? [],
   posts: props.posts ?? [],
   comments: props.comments ?? [],
-});
+};
+
+State.init(initState);
 
 // Init
 if (state.account === undefined) {
@@ -30,7 +32,6 @@ if (state.account === undefined) {
 
 const computeResults = (term) => {
   state.sdk.searchProfiles(term).then((payload) => {
-    console.log("searchProfiles", payload.body.data.search.items);
     State.update({ profiles: payload.body.data.search.items, term });
   });
 };
@@ -89,10 +90,15 @@ const LeftPanelWrapper = styled.div`
   min-width: 20rem;
 `;
 const RightPanelWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
   box-sizing: border-box;
   text-align: center;
+  margin: 1rem;
+`;
+
+const NoContentWrapper = styled.div`
   margin: 1rem;
 `;
 
@@ -126,11 +132,17 @@ return (
                 profile: result,
                 onSelection: (selection) => {
                   State.update({
-                    selectedProfile: { profile: result, selection },
+                    selectedProfile: {
+                      profile: result,
+                      selection,
+                      followers: [],
+                      posts: [],
+                      comments: [],
+                    },
                   });
                   if (selection === "followers") getFollowers(result.profileId);
                   if (selection === "posts") getPosts(result.profileId);
-                  if (selection === "comments") getPosts(result.profileId);
+                  if (selection === "comments") getComments(result.profileId);
                   if (selection === "follow")
                     handleFollow(result.profileId, result.isFollowedByMe);
                 },
@@ -154,14 +166,12 @@ return (
         ) : state.selectedProfile?.selection === "comments" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfileCommentsView`}
-            props={{ posts: state.posts }}
+            props={{ comments: state.comments, DEV_USER: DEV_USER }}
           />
         ) : (
-          <div>
-            {state.term && state.profiles?.length === 0
-              ? "Get started by searching"
-              : "Nothing Selected"}
-          </div>
+          <NoContentWrapper>
+            {!state.term ? "Get started by searching" : "Nothing Selected"}
+          </NoContentWrapper>
         )}
       </RightPanelWrapper>
     </ContentWrapper>
