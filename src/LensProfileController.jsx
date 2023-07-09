@@ -2,7 +2,7 @@ const LENS_API_URL = props.testnet
   ? "https://api-mumbai.lens.dev"
   : "https://api.lens.dev";
 
-const DEV_USER = props.testnet ? "gr8h.testnet" : "gr8h.near";
+const DEV_USER = props.testnet ? "gr8h.testnet" : "gr8h.testnet";
 
 State.init({
   authenticated: null,

@@ -1,4 +1,4 @@
-const DEV_USER = props.testnet ? "caruso33.testnet" : "gr8h.near"
+const DEV_USER = props.testnet ? "caruso33.testnet" : "gr8h.testnet";
 // https://near.org/{DEV_USER}/widget/LensProfileSearch
 
 State.init({
@@ -9,46 +9,92 @@ State.init({
   followers: props.followers ?? [],
   posts: props.posts ?? [],
   comments: props.comments ?? [],
-})
+});
+
+// Init
+if (state.account === undefined) {
+  console.log("eth_requestAccounts");
+
+  const accounts = Ethers.send("eth_requestAccounts", []);
+
+  if (accounts.length) {
+    State.update({ account: accounts[0] });
+
+    state.sdk.authenticateLens(
+      state.account,
+      () => Ethers.provider().getSigner(),
+      isFollowedByMe
+    );
+  }
+}
 
 const computeResults = (term) => {
   state.sdk.searchProfiles(term).then((payload) => {
-    State.update({ profiles: payload.body.data.search.items, term })
-  })
-}
+    console.log("searchProfiles", payload.body.data.search.items);
+    State.update({ profiles: payload.body.data.search.items, term });
+  });
+};
 
 const getFollowers = (profileId) => {
   state.sdk.getFollowers(profileId).then((payload) => {
-    State.update({ followers: payload.body.data.followers.items })
-  })
-}
+    State.update({ followers: payload.body.data.followers.items });
+  });
+};
 
 const getPosts = (profileId) => {
   state.sdk.getPosts(profileId).then((payload) => {
-    State.update({ posts: payload.body.data.publications.items })
-  })
-}
+    State.update({ posts: payload.body.data.publications.items });
+  });
+};
 
 const getComments = (profileId) => {
   state.sdk.getComments(profileId).then((payload) => {
-    State.update({ comments: payload.body.data.publications.items })
-  })
-}
+    State.update({ comments: payload.body.data.publications.items });
+  });
+};
+
+const handleFollow = (profileId, isFollowedByMe) => {
+  if (isFollowedByMe) {
+    state.sdk.unfollowProfile(profileId).then((payload) => {
+      console.log("isFollowedByMe", payload.body.errors);
+
+      if (payload.body.errors.length) {
+        payload.body.errors.forEach((error) => {
+          console.log("isFollowedByMe: ", error.message);
+        });
+      } else {
+        console.log("isFollowedByMe", payload);
+      }
+    });
+  } else {
+    state.sdk.followProfile(profileId).then((payload) => {
+      console.log("isFollowedByMe", payload.body.errors);
+
+      if (payload.body.errors.length) {
+        payload.body.errors.forEach((error) => {
+          console.log("isFollowedByMe: ", error.message);
+        });
+      } else {
+        console.log("isFollowedByMe", payload);
+      }
+    });
+  }
+};
 
 const ContentWrapper = styled.div`
   display: flex;
-`
+`;
 const LeftPanelWrapper = styled.div`
   max-width: 20vw;
   min-width: 20rem;
-`
+`;
 const RightPanelWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   box-sizing: border-box;
   text-align: center;
   margin: 1rem;
-`
+`;
 
 return (
   <>
@@ -72,6 +118,7 @@ return (
     <ContentWrapper>
       <LeftPanelWrapper>
         {state.profiles.map((result) => {
+          console.log("result", result.isFollowedByMe);
           return (
             <Widget
               src={`${DEV_USER}/widget/LensProfileSearchView`}
@@ -80,14 +127,16 @@ return (
                 onSelection: (selection) => {
                   State.update({
                     selectedProfile: { profile: result, selection },
-                  })
-                  if (selection === "followers") getFollowers(result.profileId)
-                  if (selection === "posts") getPosts(result.profileId)
-                  if (selection === "comments") getPosts(result.profileId)
+                  });
+                  if (selection === "followers") getFollowers(result.profileId);
+                  if (selection === "posts") getPosts(result.profileId);
+                  if (selection === "comments") getPosts(result.profileId);
+                  if (selection === "follow")
+                    handleFollow(result.profileId, result.isFollowedByMe);
                 },
               }}
             />
-          )
+          );
         })}
       </LeftPanelWrapper>
 
@@ -117,4 +166,4 @@ return (
       </RightPanelWrapper>
     </ContentWrapper>
   </>
-)
+);
