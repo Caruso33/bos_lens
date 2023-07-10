@@ -1,14 +1,27 @@
 State.init({});
 
-const SelectionButton = styled.button`
-  border-radius: 15px;
-  background: white;
-  padding: 5px;
-`;
+// const SelectionButton = styled.button`
+//   border-radius: 15px;
+//   background: white;
+//   padding: 5px;
+// `;
 
 const ProfileName = styled.h1`
   word-break: break-all;
-`
+`;
+
+const SelectionButton = styled.button`
+  margin-top: 1rem;
+  border: 0;
+  border-radius: 5px;
+  padding: 0.3rem;
+  width: 100%;
+  max-width: 150px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fff;
+  background-color: #7d3cdc;
+`;
 
 function renderProfile() {
   return !props.profile ? (
@@ -26,18 +39,15 @@ function renderProfile() {
           </SelectionButton>
           <br />
           <SelectionButton onClick={() => props.onSelection("followers")}>
-            Followers
-            {props.profile.stats.totalFollowers}
+            Get Followers ({props.profile.stats.totalFollowers})
           </SelectionButton>
 
           <SelectionButton onClick={() => props.onSelection("comments")}>
-            Comments
-            {props.profile.stats.totalComments}
+            Get Comments ({props.profile.stats.totalComments})
           </SelectionButton>
 
           <SelectionButton onClick={() => props.onSelection("posts")}>
-            Posts
-            {props.profile.stats.totalPosts}
+            Get Posts ({props.profile.stats.totalPosts})
           </SelectionButton>
         </div>
       </div>
@@ -45,6 +55,6 @@ function renderProfile() {
   );
 }
 
-console.log("LensProfileSearchView, props: ", props, " state: ", state);
+// console.log("LensProfileSearchView, props: ", props, " state: ", state);
 
 return <div>{renderProfile()}</div>;
