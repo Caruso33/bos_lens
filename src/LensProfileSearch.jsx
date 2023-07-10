@@ -31,7 +31,7 @@ const ContentWrapper = styled.div`
   display: flex;
 `;
 const LeftPanelWrapper = styled.div`
-  max-width: 20vw;
+  max-width: 25vw;
   min-width: 20rem;
 `;
 const RightPanelWrapper = styled.div`
