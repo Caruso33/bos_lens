@@ -6,16 +6,18 @@ const SelectionButton = styled.button`
   padding: 5px;
 `;
 
-function renderProfile() {
-  console.log("onSelection", props.onSelection);
+const ProfileName = styled.h1`
+  word-break: break-all;
+`
 
+function renderProfile() {
   return !props.profile ? (
     <div>Profile is missing!</div>
   ) : (
     <>
       <div class="container border p-3 m-3">
         <img src={props.profile.picture.original.url} width={100} />
-        <h1>{props.profile.name}</h1>
+        <ProfileName>{props.profile.name}</ProfileName>
         <p>@{props.profile.handle}</p>
         <p>{props.profile.bio}</p>
         <div>
