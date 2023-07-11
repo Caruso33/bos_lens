@@ -19,8 +19,6 @@ function getProfile() {
 
   State.update({ isProfileCalled: true });
 
-  console.log("getProfile", state.sdk, props.handle);
-
   return props.handle
     ? state.sdk.getProfileByHandle(props.handle).then((result) => {
         if (result.status !== 200) {

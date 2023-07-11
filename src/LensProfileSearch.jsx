@@ -1,5 +1,6 @@
 // Globals
-const DEV_USER = props.testnet ? "caruso33.testnet" : "gr8h.testnet";
+const ENV = props.testnet ? "testnet" : "near";
+const DEV_USER = props.testnet ? `gr8h.${ENV}` : `gr8h.${ENV}`;
 
 const initState = {
   term: props.terms ?? "",
@@ -81,7 +82,7 @@ if (state.isConnected && !state.sdk.authenticated && props.requireLogin) {
     state.account,
     () => Ethers.provider().getSigner(),
     () => {
-      console.log("authenticated after", state.sdk.authenticated);
+      console.log("authenticated");
     }
   );
 }
@@ -108,8 +109,10 @@ function getAllowedNetwork() {
 
 // Logic
 const computeResults = (term) => {
+  State.update({ term });
   state.sdk.searchProfiles(term).then((payload) => {
     State.update({ profiles: payload.body.data.search.items, term });
+    console.log("computeResults", payload.body.data.search.items);
   });
 };
 
@@ -135,12 +138,12 @@ function followProfile(profileId) {
   state.sdk.followProfile(profileId).then((payload) => {
     if (payload.body.errors.length) {
       payload.body.errors.forEach((error) => {
-        console.log("followProfile: ", error.message);
+        console.log("followProfile.error: ", error.message);
       });
     } else {
       console.log("followProfile", payload);
-      State.update({ followed: true });
     }
+    computeResults(state.term);
   });
 }
 
@@ -148,16 +151,17 @@ function unfollowProfile(profileId) {
   state.sdk.unfollowProfile(profileId).then((payload) => {
     if (payload.body.errors.length) {
       payload.body.errors.forEach((error) => {
-        console.log("unfollowProfile: ", error.message);
+        console.log("unfollowProfile.error: ", error.message);
       });
     } else {
       console.log("unfollowProfile", payload);
-      State.update({ followed: !(payload.status == 200) });
     }
+    computeResults(state.term);
   });
 }
 
 const handleFollow = (profileId, isFollowedByMe) => {
+  console.log("handleFollow", profileId, isFollowedByMe);
   if (isFollowedByMe) {
     unfollowProfile(profileId);
   } else {
@@ -167,7 +171,6 @@ const handleFollow = (profileId, isFollowedByMe) => {
 
 return (
   <>
-    {/* <Widget src={`${DEV_USER}/widget/Login`}></Widget> */}
     <ButtonContainer>
       <Web3Connect
         className="swap-button-enabled swap-button-text p-2"
@@ -209,6 +212,7 @@ return (
                       comments: [],
                     },
                   });
+
                   if (selection === "followers") getFollowers(result.profileId);
                   if (selection === "posts") getPosts(result.profileId);
                   if (selection === "comments") getComments(result.profileId);

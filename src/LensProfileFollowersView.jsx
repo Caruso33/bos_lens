@@ -22,7 +22,7 @@ const ProfileBox = styled.div`
 const ImgPlaceholder = styled.div`
   width: 80px;
   height: 80px;
-  background-image: url("https://cdn.stamp.fyi/avatar/eth:0x7bee83e0f1f0e99f11560170568258df61965304?s=80");
+  background-image: url("https://cdn.stamp.fyi/avatar/eth:6d21d1544a4c303a3a407b9756071386955b76a3b091fded5731ca049604994a?s=80");
 `;
 
 const SelectionButton = styled.button`
