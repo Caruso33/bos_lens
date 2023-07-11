@@ -19,6 +19,15 @@ const ProfileBox = styled.div`
   border: 1px solid gray;
 `;
 
+const SelectedProfileBox = styled.div`
+  flex-direction: left;
+  align-items: center;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid gray;
+`;
+
 const ImgPlaceholder = styled.div`
   width: 80px;
   height: 80px;
@@ -35,43 +44,56 @@ const ProfileHandle = styled.p`
   word-break: break-all;
 `;
 
+const SubHeading = styled.h2`
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+`;
+
 function renderFollowers() {
   return (
-    <Box>
-      {!props.followers || props.followers.length === 0 ? (
-        <div>No Followers so far.</div>
-      ) : (
-        props.followers.map((follower) => {
-          const profile = follower?.wallet?.defaultProfile;
+    <>
+      <SelectedProfileBox>
+        <SubHeading>{props.selectedProfile.profile.name} Followers</SubHeading>
+      </SelectedProfileBox>
+      <Box>
+        {!props.followers || props.followers.length === 0 ? (
+          <div>No Followers so far.</div>
+        ) : (
+          props.followers.map((follower) => {
+            const profile = follower?.wallet?.defaultProfile;
 
-          return (
-            <ProfileBox class="p-3">
-              {profile?.picture?.original?.url ? (
-                <img src={profile.picture.original.url} width={80} />
-              ) : (
-                <ImgPlaceholder />
-              )}
-              <ProfileHandle>@{profile?.handle}</ProfileHandle>
+            console.log("props: ", props);
 
-              <div>
+            return (
+              <ProfileBox class="p-3">
+                {profile?.picture?.original?.url ? (
+                  <img src={profile.picture.original.url} width={80} />
+                ) : (
+                  <ImgPlaceholder />
+                )}
+                <ProfileHandle>@{profile?.handle}</ProfileHandle>
+
                 <div>
-                  Followers
-                  {profile.stats.totalFollowers}
+                  <div>
+                    Followers
+                    {profile.stats.totalFollowers}
+                  </div>
+                  <div>
+                    Comments
+                    {profile.stats.totalComments}
+                  </div>
+                  <div>
+                    Posts
+                    {profile.stats.totalPosts}
+                  </div>
                 </div>
-                <div>
-                  Comments
-                  {profile.stats.totalComments}
-                </div>
-                <div>
-                  Posts
-                  {profile.stats.totalPosts}
-                </div>
-              </div>
-            </ProfileBox>
-          );
-        })
-      )}
-    </Box>
+              </ProfileBox>
+            );
+          })
+        )}
+      </Box>
+    </>
   );
 }
 

@@ -57,6 +57,12 @@ const ButtonContainer = styled.div`
   border: apx solid #e3e6ec;
 `;
 
+const SubHeading = styled.h2`
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+`;
+
 // Init & Login
 if (state.account === undefined) {
   const accounts = Ethers.send("eth_requestAccounts", []);
@@ -89,7 +95,8 @@ if (state.isConnected && !state.sdk.authenticated && props.requireLogin) {
 
 if (!!state.sdk && !state.profile && state.account) {
   state.sdk.getProfileByEthereumAddress(state.account).then((payload) => {
-    State.update({ profile: payload.body.data.profile });
+    let items = payload.body.data.profiles.items;
+    State.update({ profile: items[0] });
   });
 }
 
@@ -112,7 +119,6 @@ const computeResults = (term) => {
   State.update({ term });
   state.sdk.searchProfiles(term).then((payload) => {
     State.update({ profiles: payload.body.data.search.items, term });
-    console.log("computeResults", payload.body.data.search.items);
   });
 };
 
@@ -140,8 +146,6 @@ function followProfile(profileId) {
       payload.body.errors.forEach((error) => {
         console.log("followProfile.error: ", error.message);
       });
-    } else {
-      console.log("followProfile", payload);
     }
     computeResults(state.term);
   });
@@ -153,15 +157,12 @@ function unfollowProfile(profileId) {
       payload.body.errors.forEach((error) => {
         console.log("unfollowProfile.error: ", error.message);
       });
-    } else {
-      console.log("unfollowProfile", payload);
     }
     computeResults(state.term);
   });
 }
 
 const handleFollow = (profileId, isFollowedByMe) => {
-  console.log("handleFollow", profileId, isFollowedByMe);
   if (isFollowedByMe) {
     unfollowProfile(profileId);
   } else {
@@ -171,6 +172,11 @@ const handleFollow = (profileId, isFollowedByMe) => {
 
 return (
   <>
+    <SubHeading>
+      {state.sdk.authenticated
+        ? `Welcome ${state.profile?.handle}`
+        : "Not authenticated"}
+    </SubHeading>
     <ButtonContainer>
       <Web3Connect
         className="swap-button-enabled swap-button-text p-2"
@@ -202,6 +208,7 @@ return (
               src={`${DEV_USER}/widget/LensProfileSearchView`}
               props={{
                 profile: result,
+                isAuthenticated: state.sdk.authenticated,
                 onSelection: (selection) => {
                   State.update({
                     selectedProfile: {
@@ -229,17 +236,27 @@ return (
         {state.selectedProfile?.selection === "followers" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfileFollowersView`}
-            props={{ followers: state.followers }}
+            props={{
+              followers: state.followers,
+              selectedProfile: state.selectedProfile,
+            }}
           />
         ) : state.selectedProfile?.selection === "posts" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfilePostsView`}
-            props={{ posts: state.posts }}
+            props={{
+              posts: state.posts,
+              selectedProfile: state.selectedProfile,
+            }}
           />
         ) : state.selectedProfile?.selection === "comments" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfileCommentsView`}
-            props={{ comments: state.comments, DEV_USER: DEV_USER }}
+            props={{
+              comments: state.comments,
+              DEV_USER: DEV_USER,
+              selectedProfile: state.selectedProfile,
+            }}
           />
         ) : (
           <NoContentWrapper>
