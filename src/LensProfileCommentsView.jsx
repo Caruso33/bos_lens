@@ -41,57 +41,79 @@ const CommentContent = styled.p`
   align-self: flex-start;
 `;
 
+const SelectedProfileBox = styled.div`
+  flex-direction: left;
+  align-items: center;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid gray;
+`;
+
+const SubHeading = styled.h2`
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+`;
+
 function renderComments() {
   return (
-    <Box>
-      {!props.comments || props.comments.length === 0 ? (
-        <div>No Comments so far.</div>
-      ) : (
-        props.comments.map((comment) => {
-          const metadata = comment?.metadata;
-          const createdAt = new Date(comment?.createdAt);
+    <>
+      <SelectedProfileBox>
+        <SubHeading>{props.selectedProfile.profile.name} Comments</SubHeading>
+      </SelectedProfileBox>
+      <Box>
+        {!props.comments || props.comments.length === 0 ? (
+          <div>No Comments so far.</div>
+        ) : (
+          props.comments.map((comment) => {
+            const metadata = comment?.metadata;
+            const createdAt = new Date(comment?.createdAt);
 
-          return (
-            <CommentBox class="p-3">
-              {metadata?.media?.length > 0 &&
-                [metadata.media[0]].map((media) => {
-                  const mimeType = media?.original?.mimeType;
+            return (
+              <CommentBox class="p-3">
+                {metadata?.media?.length > 0 &&
+                  [metadata.media[0]].map((media) => {
+                    const mimeType = media?.original?.mimeType;
 
-                  let url = media?.original?.url;
-                  if (url.startsWith("ipfs://")) {
-                    url = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-                  }
+                    let url = media?.original?.url;
+                    if (url.startsWith("ipfs://")) {
+                      url = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+                    }
 
-                  return mimeType === "video/mp4" ? (
-                    <iframe
-                      src={media?.original?.url}
-                      width="100%"
-                      height="100%"
-                    />
-                  ) : mimeType?.startsWith("image") ? (
-                    <img src={url} width={80} />
-                  ) : null;
-                })}
+                    return mimeType === "video/mp4" ? (
+                      <iframe
+                        src={media?.original?.url}
+                        width="100%"
+                        height="100%"
+                      />
+                    ) : mimeType?.startsWith("image") ? (
+                      <img src={url} width={80} />
+                    ) : null;
+                  })}
 
-              <CommentPostWrapper>
-                <Widget
-                  src={`${props.DEV_USER}/widget/LensProfilePostsView`}
-                  props={{ posts: [comment.mainPost] }}
-                />
-              </CommentPostWrapper>
+                <CommentPostWrapper>
+                  <Widget
+                    src={`${props.DEV_USER}/widget/LensProfilePostsView`}
+                    props={{ posts: [comment.mainPost] }}
+                  />
+                </CommentPostWrapper>
 
-              <CommentContentWrapper>
-                <CommentDate>{createdAt.toDateString()}</CommentDate>
+                <CommentContentWrapper>
+                  <CommentDate>{createdAt.toDateString()}</CommentDate>
 
-                <CommentDescription>{metadata?.description}</CommentDescription>
+                  <CommentDescription>
+                    {metadata?.description}
+                  </CommentDescription>
 
-                <CommentContent>{metadata?.content}</CommentContent>
-              </CommentContentWrapper>
-            </CommentBox>
-          );
-        })
-      )}
-    </Box>
+                  <CommentContent>{metadata?.content}</CommentContent>
+                </CommentContentWrapper>
+              </CommentBox>
+            );
+          })
+        )}
+      </Box>
+    </>
   );
 }
 

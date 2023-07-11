@@ -1,5 +1,6 @@
 // Globals
-const DEV_USER = props.testnet ? "caruso33.testnet" : "gr8h.testnet";
+const ENV = props.testnet ? "testnet" : "near";
+const DEV_USER = props.testnet ? `gr8h.${ENV}` : `gr8h.${ENV}`;
 
 const initState = {
   term: props.terms ?? "",
@@ -56,6 +57,12 @@ const ButtonContainer = styled.div`
   border: apx solid #e3e6ec;
 `;
 
+const SubHeading = styled.h2`
+  margin-top: 20px;
+  text-align: center;
+  font-size: 18px;
+`;
+
 // Init & Login
 if (state.account === undefined) {
   const accounts = Ethers.send("eth_requestAccounts", []);
@@ -81,14 +88,15 @@ if (state.isConnected && !state.sdk.authenticated && props.requireLogin) {
     state.account,
     () => Ethers.provider().getSigner(),
     () => {
-      console.log("authenticated after", state.sdk.authenticated);
+      console.log("authenticated");
     }
   );
 }
 
 if (!!state.sdk && !state.profile && state.account) {
   state.sdk.getProfileByEthereumAddress(state.account).then((payload) => {
-    State.update({ profile: payload.body.data.profile });
+    let items = payload.body.data.profiles.items;
+    State.update({ profile: items[0] });
   });
 }
 
@@ -108,6 +116,7 @@ function getAllowedNetwork() {
 
 // Logic
 const computeResults = (term) => {
+  State.update({ term });
   state.sdk.searchProfiles(term).then((payload) => {
     State.update({ profiles: payload.body.data.search.items, term });
   });
@@ -135,12 +144,10 @@ function followProfile(profileId) {
   state.sdk.followProfile(profileId).then((payload) => {
     if (payload.body.errors.length) {
       payload.body.errors.forEach((error) => {
-        console.log("followProfile: ", error.message);
+        console.log("followProfile.error: ", error.message);
       });
-    } else {
-      console.log("followProfile", payload);
-      State.update({ followed: true });
     }
+    computeResults(state.term);
   });
 }
 
@@ -148,12 +155,10 @@ function unfollowProfile(profileId) {
   state.sdk.unfollowProfile(profileId).then((payload) => {
     if (payload.body.errors.length) {
       payload.body.errors.forEach((error) => {
-        console.log("unfollowProfile: ", error.message);
+        console.log("unfollowProfile.error: ", error.message);
       });
-    } else {
-      console.log("unfollowProfile", payload);
-      State.update({ followed: !(payload.status == 200) });
     }
+    computeResults(state.term);
   });
 }
 
@@ -167,7 +172,11 @@ const handleFollow = (profileId, isFollowedByMe) => {
 
 return (
   <>
-    {/* <Widget src={`${DEV_USER}/widget/Login`}></Widget> */}
+    <SubHeading>
+      {state.sdk.authenticated
+        ? `Welcome ${state.profile?.handle}`
+        : "Not authenticated"}
+    </SubHeading>
     <ButtonContainer>
       <Web3Connect
         className="swap-button-enabled swap-button-text p-2"
@@ -199,6 +208,7 @@ return (
               src={`${DEV_USER}/widget/LensProfileSearchView`}
               props={{
                 profile: result,
+                isAuthenticated: state.sdk.authenticated,
                 onSelection: (selection) => {
                   State.update({
                     selectedProfile: {
@@ -209,6 +219,7 @@ return (
                       comments: [],
                     },
                   });
+
                   if (selection === "followers") getFollowers(result.profileId);
                   if (selection === "posts") getPosts(result.profileId);
                   if (selection === "comments") getComments(result.profileId);
@@ -225,17 +236,27 @@ return (
         {state.selectedProfile?.selection === "followers" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfileFollowersView`}
-            props={{ followers: state.followers }}
+            props={{
+              followers: state.followers,
+              selectedProfile: state.selectedProfile,
+            }}
           />
         ) : state.selectedProfile?.selection === "posts" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfilePostsView`}
-            props={{ posts: state.posts }}
+            props={{
+              posts: state.posts,
+              selectedProfile: state.selectedProfile,
+            }}
           />
         ) : state.selectedProfile?.selection === "comments" ? (
           <Widget
             src={`${DEV_USER}/widget/LensProfileCommentsView`}
-            props={{ comments: state.comments, DEV_USER: DEV_USER }}
+            props={{
+              comments: state.comments,
+              DEV_USER: DEV_USER,
+              selectedProfile: state.selectedProfile,
+            }}
           />
         ) : (
           <NoContentWrapper>

@@ -390,7 +390,12 @@ let LensSDK = {
           }
         }
       }
-  `
+  `,
+      {},
+      {
+        "Content-Type": "application/json",
+        "x-access-token": LensSDK.jwt.accessToken,
+      }
     );
   },
   getProfileByEthereumAddress: (ethereumAddress) => {

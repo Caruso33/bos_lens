@@ -47,9 +47,13 @@ function renderProfile() {
         <p>@{props.profile.handle}</p>
         <p>{props.profile.bio}</p>
         <div>
-          <SelectionButton onClick={() => props.onSelection("follow")}>
-            {props.profile.isFollowedByMe ? "Unfollow" : "Follow"}
-          </SelectionButton>
+          {props.isAuthenticated ? (
+            <SelectionButton onClick={() => props.onSelection("follow")}>
+              {props.profile.isFollowedByMe ? "Unfollow" : "Follow"}
+            </SelectionButton>
+          ) : (
+            ""
+          )}
         </div>
         <div>
           <SelectionButton onClick={() => props.onSelection("followers")}>
