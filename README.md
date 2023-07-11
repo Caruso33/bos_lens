@@ -1,6 +1,6 @@
 # Lens components on BOS
 
-[Try searching here for lens content](https://test.near.social/#/caruso33.testnet/widget/LensProfileSearch?testnet=true&requiredLogin=true)
+[Try searching here for lens content](https://test.near.social/#/gr8h.testnet/widget/LensProfileSearch?testnet=true&requiredLogin=true)
 
 ## Local Dev
 
