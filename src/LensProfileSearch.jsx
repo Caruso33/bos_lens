@@ -50,8 +50,10 @@ const NoContentWrapper = styled.div`
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: left;
-  align-items: left;
+  justify-content: right;
+  align-items: right;
+  text-align: right;
+  text-align: right;
   display: flex;
   justify-content: flex-end;
   border: apx solid #e3e6ec;
@@ -59,8 +61,13 @@ const ButtonContainer = styled.div`
 
 const SubHeading = styled.h2`
   margin-top: 20px;
-  text-align: center;
+  text-align: left;
   font-size: 18px;
+`;
+
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 // Init & Login
@@ -98,6 +105,16 @@ if (!!state.sdk && !state.profile && state.account) {
     let items = payload.body.data.profiles.items;
     State.update({ profile: items[0] });
   });
+}
+
+function signInWithLens() {
+  state.sdk.authenticateLens(
+    state.account,
+    () => Ethers.provider().getSigner(),
+    () => {
+      console.log("authenticated");
+    }
+  );
 }
 
 function switchNetwork() {
@@ -172,17 +189,31 @@ const handleFollow = (profileId, isFollowedByMe) => {
 
 return (
   <>
-    <SubHeading>
-      {state.sdk.authenticated
-        ? `Welcome ${state.profile?.handle}`
-        : "Not authenticated"}
-    </SubHeading>
-    <ButtonContainer>
-      <Web3Connect
-        className="swap-button-enabled swap-button-text p-2"
-        connectLabel="Connect with wallet"
-      />
-    </ButtonContainer>
+    <Container>
+      <SubHeading>
+        {state.sdk.authenticated
+          ? `Welcome ${state.profile?.handle}`
+          : "Not authenticated"}
+      </SubHeading>
+      <ButtonContainer>
+        <Web3Connect
+          className="swap-button-enabled swap-button-text p-2"
+          connectLabel="Connect with wallet"
+        />
+        {!state.sdk.authenticated &&
+        state.isConnected &&
+        !props.requireLogin ? (
+          <button
+            class="btn swap-button-enabled swap-button-text p-2 btn-outline-primary"
+            onClick={signInWithLens}
+          >
+            Sign in with Lens
+          </button>
+        ) : (
+          ""
+        )}
+      </ButtonContainer>
+    </Container>
     <Widget
       src={`${DEV_USER}/widget/LensSDK`}
       props={{
