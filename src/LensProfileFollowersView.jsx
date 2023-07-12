@@ -19,25 +19,10 @@ const ProfileBox = styled.div`
   border: 1px solid gray;
 `;
 
-const SelectedProfileBox = styled.div`
-  flex-direction: left;
-  align-items: center;
-  margin-right: 1rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border: 1px solid gray;
-`;
-
 const ImgPlaceholder = styled.div`
   width: 80px;
   height: 80px;
   background-image: url("https://cdn.stamp.fyi/avatar/eth:6d21d1544a4c303a3a407b9756071386955b76a3b091fded5731ca049604994a?s=80");
-`;
-
-const SelectionButton = styled.button`
-  border-radius: 15px;
-  background: white;
-  padding: 5px;
 `;
 
 const ProfileHandle = styled.p`
@@ -45,17 +30,26 @@ const ProfileHandle = styled.p`
 `;
 
 const SubHeading = styled.h2`
-  margin-top: 20px;
-  text-align: center;
+  text-align: left;
   font-size: 18px;
+`;
+
+const SelectedProfileBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border-bottom: 1px solid gray;
 `;
 
 function renderFollowers() {
   return (
     <>
       <SelectedProfileBox>
-        <SubHeading>{props.selectedProfile.profile.name} Followers</SubHeading>
+        <SubHeading>
+          @{props.selectedProfile.profile.handle} followers:
+        </SubHeading>
       </SelectedProfileBox>
+      <br />
       <Box>
         {!props.followers || props.followers.length === 0 ? (
           <div>No Followers so far.</div>

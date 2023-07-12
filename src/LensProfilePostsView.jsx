@@ -39,27 +39,25 @@ const PostContent = styled.p`
   align-self: flex-start;
 `;
 
-const SelectedProfileBox = styled.div`
-  flex-direction: left;
-  align-items: center;
-  margin-right: 1rem;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border: 1px solid gray;
+const SubHeading = styled.h2`
+  text-align: left;
+  font-size: 18px;
 `;
 
-const SubHeading = styled.h2`
-  margin-top: 20px;
-  text-align: center;
-  font-size: 18px;
+const SelectedProfileBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  border-bottom: 1px solid gray;
 `;
 
 function renderPosts() {
   return (
     <>
       <SelectedProfileBox>
-        <SubHeading>{props.selectedProfile.profile.name} Posts</SubHeading>
+        <SubHeading>@{props.selectedProfile.profile.handle} posts:</SubHeading>
       </SelectedProfileBox>
+      <br />
       <Box>
         {!props.posts || props.posts.length === 0 ? (
           <div>No posts so far.</div>
