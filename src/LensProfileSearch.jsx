@@ -195,23 +195,21 @@ return (
           ? `Welcome ${state.profile?.handle}`
           : "Not authenticated"}
       </SubHeading>
+      {!state.sdk.authenticated && state.isConnected && !props.requireLogin ? (
+        <button
+          class="btn swap-button-enabled swap-button-text p-2 btn-outline-primary"
+          onClick={signInWithLens}
+        >
+          Sign in with Lens
+        </button>
+      ) : (
+        ""
+      )}
       <ButtonContainer>
         <Web3Connect
           className="swap-button-enabled swap-button-text p-2"
           connectLabel="Connect with wallet"
         />
-        {!state.sdk.authenticated &&
-        state.isConnected &&
-        !props.requireLogin ? (
-          <button
-            class="btn swap-button-enabled swap-button-text p-2 btn-outline-primary"
-            onClick={signInWithLens}
-          >
-            Sign in with Lens
-          </button>
-        ) : (
-          ""
-        )}
       </ButtonContainer>
     </Container>
     <Widget
