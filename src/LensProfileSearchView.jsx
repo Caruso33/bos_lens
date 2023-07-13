@@ -1,6 +1,6 @@
 State.init({});
 
-const ProfileName = styled.h1`
+const ProfileName = styled.h2`
   word-break: break-all;
 `;
 
@@ -27,6 +27,12 @@ const ContainerDiv = styled.div`
 const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
+  background: linear-gradient(
+    to bottom,
+    rgb(139, 92, 246) 50%,
+    transparent 50%
+  );
+  border-radius: 20px;
 `;
 
 function renderProfile() {
@@ -40,7 +46,17 @@ function renderProfile() {
         }
       >
         <ImageContainer>
-          <img src={props.profile.picture.original.url} width={100} />
+          <img
+            src={
+              !!props.profile.picture
+                ? props.profile.picture.original.url.replace(
+                    "ipfs://",
+                    "https://ipfs.io/ipfs/"
+                  )
+                : "https://cdn.stamp.fyi/avatar/eth:6d21d1544a4c303a3a407b9756071386955b76a3b091fded5731ca049604994a?s=100"
+            }
+            width={100}
+          />
         </ImageContainer>
         <ProfileName>{props.profile.name}</ProfileName>
         <p>@{props.profile.handle}</p>
