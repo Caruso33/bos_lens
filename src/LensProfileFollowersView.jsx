@@ -17,6 +17,12 @@ const ProfileBox = styled.div`
   margin-bottom: 1rem;
   padding: 1rem;
   border: 1px solid gray;
+  background: linear-gradient(
+    to bottom,
+    rgb(139, 92, 246) 25%,
+    transparent 25%
+  );
+  border-radius: 20px;
 `;
 
 const ImgPlaceholder = styled.div`
@@ -62,7 +68,17 @@ function renderFollowers() {
             return (
               <ProfileBox class="p-3">
                 {profile?.picture?.original?.url ? (
-                  <img src={profile.picture.original.url} width={80} />
+                  <img
+                    src={
+                      !!profile.picture
+                        ? profile.picture.original.url.replace(
+                            "ipfs://",
+                            "https://ipfs.io/ipfs/"
+                          )
+                        : ""
+                    }
+                    width={80}
+                  />
                 ) : (
                   <ImgPlaceholder />
                 )}

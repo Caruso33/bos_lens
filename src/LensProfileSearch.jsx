@@ -59,15 +59,21 @@ const ButtonContainer = styled.div`
   border: apx solid #e3e6ec;
 `;
 
-const SubHeading = styled.h2`
-  margin-top: 20px;
-  text-align: left;
-  font-size: 18px;
-`;
-
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+const LoginContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #1c1f2a;
+`;
+
+const Heading = styled.h3`
+  color: #8f73ff;
 `;
 
 // Init & Login
@@ -190,17 +196,18 @@ const handleFollow = (profileId, isFollowedByMe) => {
 return (
   <>
     <Container>
-      <SubHeading>
+      <Heading>
         {state.sdk.authenticated
-          ? `Welcome ${state.profile?.handle}`
-          : "Not authenticated"}
-      </SubHeading>
+          ? `Welcome @${state.profile?.handle}`
+          : "Please Sign-in"}
+      </Heading>
+
       {!state.sdk.authenticated && state.isConnected && !props.requireLogin ? (
         <button
           class="btn swap-button-enabled swap-button-text p-2 btn-outline-primary"
           onClick={signInWithLens}
         >
-          Sign in with Lens
+          Sign-in with Lens
         </button>
       ) : (
         ""
