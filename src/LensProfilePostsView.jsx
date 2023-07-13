@@ -3,9 +3,8 @@ State.init({});
 const Box = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   box-sizing: border-box;
-  text-align: center;
+  text-align: left;
   margin-left: 1rem;
 `;
 
@@ -16,6 +15,12 @@ const PostBox = styled.div`
   padding: 2rem 5px;
 `;
 
+const ImageWrapper = styled.div`
+  width: 50%;
+  text-align: center;
+  margin: 0 auto;
+`;
+
 const ImgPlaceholder = styled.div`
   width: 80px;
   height: 80px;
@@ -24,7 +29,6 @@ const ImgPlaceholder = styled.div`
 const PostContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin: 0 1rem;
 `;
 
@@ -32,12 +36,8 @@ const PostDate = styled.p`
   align-self: flex-end;
 `;
 
-const PostDescription = styled.h3`
-  align-self: flex-start;
-`;
-const PostContent = styled.p`
-  align-self: flex-start;
-`;
+const PostDescription = styled.h3``;
+const PostContent = styled.p``;
 
 const SubHeading = styled.h2`
   text-align: left;
@@ -68,32 +68,39 @@ function renderPosts() {
 
             return (
               <PostBox class="p-3">
-                {metadata?.media?.length > 0 &&
-                  [metadata.media[0]].map((media) => {
-                    const mimeType = media?.original?.mimeType;
+                {metadata?.media?.length > 0 && (
+                  <ImageWrapper>
+                    {[metadata.media[0]].map((media) => {
+                      const mimeType = media?.original?.mimeType;
 
-                    let url = media?.original?.url;
-                    if (url.startsWith("ipfs://")) {
-                      url = url.replace("ipfs://", "https://ipfs.io/ipfs/");
-                    }
+                      let url = media?.original?.url;
+                      if (url.startsWith("ipfs://")) {
+                        url = url.replace("ipfs://", "https://ipfs.io/ipfs/");
+                      }
 
-                    return mimeType === "video/mp4" ? (
-                      <iframe
-                        src={media?.original?.url}
-                        width="100%"
-                        height="100%"
-                      />
-                    ) : mimeType?.startsWith("image") ? (
-                      <img src={url} width={80} />
-                    ) : null;
-                  })}
+                      return mimeType === "video/mp4" ? (
+                        <iframe
+                          src={media?.original?.url}
+                          width="100%"
+                          height="100%"
+                        />
+                      ) : mimeType?.startsWith("image") ? (
+                        <img src={url} width={"100%"} />
+                      ) : null;
+                    })}
+                  </ImageWrapper>
+                )}
 
                 <PostContentWrapper>
                   <PostDate>{createdAt.toDateString()}</PostDate>
 
-                  <PostDescription>{metadata?.description}</PostDescription>
+                  <PostDescription>
+                    <Markdown text={metadata?.description} />
+                  </PostDescription>
 
-                  <PostContent>{metadata?.content}</PostContent>
+                  <PostContent>
+                    <Markdown text={metadata?.content} />
+                  </PostContent>
                 </PostContentWrapper>
               </PostBox>
             );
@@ -104,6 +111,6 @@ function renderPosts() {
   );
 }
 
-console.log("LensProfilePostsView, props: ", props, " state: ", state);
+// console.log("LensProfilePostsView, props: ", props, " state: ", state);
 
 return <div>{renderPosts()}</div>;

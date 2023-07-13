@@ -1,6 +1,6 @@
 // Globals
 const ENV = props.testnet ? "testnet" : "near";
-const DEV_USER = props.testnet ? `gr8h.${ENV}` : `gr8h.${ENV}`;
+const DEV_USER = props.origin ? `${props.origin}.${ENV}` : `gr8h.${ENV}`;
 
 const initState = {
   term: props.terms ?? "",
@@ -237,6 +237,7 @@ return (
               src={`${DEV_USER}/widget/LensProfileSearchView`}
               props={{
                 profile: result,
+                selectedProfile: state.selectedProfile,
                 isAuthenticated: state.sdk.authenticated,
                 onSelection: (selection) => {
                   State.update({

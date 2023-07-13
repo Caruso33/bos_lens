@@ -1,11 +1,5 @@
 State.init({});
 
-// const SelectionButton = styled.button`
-//   border-radius: 15px;
-//   background: white;
-//   padding: 5px;
-// `;
-
 const ProfileName = styled.h1`
   word-break: break-all;
 `;
@@ -27,6 +21,7 @@ const ContainerDiv = styled.div`
   border: 1px solid;
   padding: 1rem;
   margin: 1rem;
+  border-color: ${(props) => (props.selected ? "#7d3cdc" : "#e3e6ec")};
 `;
 
 const ImageContainer = styled.div`
@@ -39,7 +34,11 @@ function renderProfile() {
     <div>Profile is missing!</div>
   ) : (
     <>
-      <ContainerDiv>
+      <ContainerDiv
+        selected={
+          props.profile.profileId === props.selectedProfile?.profile?.profileId
+        }
+      >
         <ImageContainer>
           <img src={props.profile.picture.original.url} width={100} />
         </ImageContainer>
