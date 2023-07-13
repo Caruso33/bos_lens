@@ -103,10 +103,12 @@ function renderComments() {
                   <CommentDate>{createdAt.toDateString()}</CommentDate>
 
                   <CommentDescription>
-                    {metadata?.description}
+                    <Markdown text={metadata?.description} />
                   </CommentDescription>
 
-                  <CommentContent>{metadata?.content}</CommentContent>
+                  <CommentContent>
+                    <Markdown text={metadata?.content} />
+                  </CommentContent>
                 </CommentContentWrapper>
               </CommentBox>
             );
