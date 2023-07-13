@@ -16,5 +16,6 @@
 
 ## Props
 
-- `requireLogin=true`
-- `testnet=true`
+- `origin=near.social.handle` - which components dependencies to use
+-
+- `testnet=true` - if to use testnet (mainnet is default)
